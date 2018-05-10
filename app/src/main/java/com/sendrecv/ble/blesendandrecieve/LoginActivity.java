@@ -3,6 +3,7 @@ package com.sendrecv.ble.blesendandrecieve;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.IntentCompat;
@@ -21,11 +22,21 @@ public class LoginActivity extends AppCompatActivity {
     EditText password;
     Button signin;
     Context con=this;
+    SharedPreferences sharedPref;
     SQLiteDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPref = con.getSharedPreferences(getString(R.string.shared_prefs), Context.MODE_PRIVATE);
+        Boolean check=sharedPref.getBoolean("loginDone",false);
+        if(check==true)
+        {
+            Intent intent=new Intent(con,DeviceScanActivity.class);
+            startActivity(intent);
+            ((Activity)con).finish();
+            return ;
+        }
         setContentView(R.layout.activity_login);
         appDatabase=openOrCreateDatabase("appDatabase",MODE_PRIVATE,null);
         appDatabase.execSQL("CREATE TABLE IF NOT EXISTS Login(Name VARCHAR,Email VARCHAR,Password VARCHAR);");
@@ -54,12 +65,14 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         ((Activity)con).finish();
                         i=0;
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("loginDone", true);
+                        editor.commit();
                         return ;
                     }
                     resultSet.moveToNext();
                 }
-                if(i==resultCount)
-                    Toast.makeText(con, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(con, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
             }
         });
     }
