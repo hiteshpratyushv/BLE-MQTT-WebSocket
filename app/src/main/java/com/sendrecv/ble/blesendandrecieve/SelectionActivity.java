@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 public class SelectionActivity extends AppCompatActivity {
     Button send,recv;
@@ -20,13 +21,14 @@ public class SelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
-        send=(Button)findViewById(R.id.send);
-        recv=(Button)findViewById(R.id.recv);
         prevActivity=getIntent();
         deviceMac=prevActivity.getExtras().getString("Mac");
         deviceName=prevActivity.getExtras().getString("Name");
-        getActionBar().setTitle(deviceName);
-        //getActionBar().setSubtitle(deviceMac);
+        getSupportActionBar().setTitle(deviceName);
+        getSupportActionBar().setSubtitle(deviceMac);
+        send=(Button)findViewById(R.id.send);
+        recv=(Button)findViewById(R.id.recv);
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

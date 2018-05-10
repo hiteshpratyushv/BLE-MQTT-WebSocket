@@ -44,8 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
                     cv.put("Password",passwordStr);
                     appDatabase.insert("login",null,cv);
                     Toast.makeText(con,"Registered",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(con, LoginActivity.class);
-                    startActivity(intent);
                     ((Activity) con).finish();
                 }
             }
