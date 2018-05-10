@@ -1,8 +1,13 @@
 package com.sendrecv.ble.blesendandrecieve;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,19 +18,11 @@ import android.widget.Toolbar;
 public class SelectionActivity extends AppCompatActivity {
     Button send,recv;
     Context con=this;
-    String deviceName;
-    String deviceMac;
-    Intent prevActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
-        prevActivity=getIntent();
-        deviceMac=prevActivity.getExtras().getString("Mac");
-        deviceName=prevActivity.getExtras().getString("Name");
-        getSupportActionBar().setTitle(deviceName);
-        getSupportActionBar().setSubtitle(deviceMac);
         send=(Button)findViewById(R.id.send);
         recv=(Button)findViewById(R.id.recv);
 
@@ -39,7 +36,7 @@ public class SelectionActivity extends AppCompatActivity {
         recv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(con,RecvActivity.class);
+                Intent intent=new Intent(con,DeviceScanActivity.class);
                 startActivity(intent);
             }
         });

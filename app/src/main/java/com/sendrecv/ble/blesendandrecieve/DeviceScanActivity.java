@@ -3,6 +3,7 @@ package com.sendrecv.ble.blesendandrecieve;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -42,6 +43,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     int count;
     ArrayList<Device> deviceList;
+    //ArrayList<BluetoothDevice> BLEDeviceList;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -99,16 +101,17 @@ public class DeviceScanActivity extends AppCompatActivity {
             builder.show();
         }
 
-        peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent= new Intent(context,SelectionActivity.class);
                 intent.putExtra("Mac",deviceList.get(i).getMac());
                 intent.putExtra("Name",deviceList.get(i).getName());
+                intent.putExtra("Device",BLEDeviceList.get(i));
                 startActivity(intent);
                 stopScanning();
             }
-        });
+        });*/
     }
 
     // Device scan callback.
@@ -116,6 +119,7 @@ public class DeviceScanActivity extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             System.out.println(result);
+            //BluetoothDevice newBLEDevice = result.getDevice();
             String name=result.getDevice().getName();
             String mac=result.getDevice().getAddress();
             if(name==null)
@@ -126,12 +130,14 @@ public class DeviceScanActivity extends AppCompatActivity {
                 Device check=deviceList.get(i);
                 if(check.getMac().equals(mac)){
                     check.setRSSI(result.getRssi());
+                    //BLEDeviceList.set(i,newBLEDevice);
                     break;
                 }
             }
             if(i==count)
             {
                 Device newDevice = new Device(name,result.getRssi(),mac);
+                //BLEDeviceList.add(newBLEDevice);
                 deviceList.add(newDevice);
                 count++;
             }

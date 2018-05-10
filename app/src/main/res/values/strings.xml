@@ -15,4 +15,5 @@
         completions."
     </string>
     <string name="shared_prefs">SHARED_PREFS</string>
+    <string name="ble_uuid">b180438b-88a9-4e8c-abfa-da50fbe5188e</string>
 </resources>

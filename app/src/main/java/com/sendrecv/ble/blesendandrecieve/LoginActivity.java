@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         Boolean check=sharedPref.getBoolean("loginDone",false);
         if(check==true)
         {
-            Intent intent=new Intent(con,DeviceScanActivity.class);
+            Intent intent=new Intent(con,SelectionActivity.class);
             startActivity(intent);
             ((Activity)con).finish();
             return ;
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                     String match=resultSet.getString(2);
                     if(passwordStr.equals(match))
                     {
-                        Intent intent=new Intent(con,DeviceScanActivity.class);
+                        Intent intent=new Intent(con,SelectionActivity.class);
                         startActivity(intent);
                         ((Activity)con).finish();
                         i=0;
