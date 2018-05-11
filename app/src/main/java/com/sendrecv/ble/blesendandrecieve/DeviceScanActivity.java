@@ -41,7 +41,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     int count;
     ArrayList<Device> deviceList;
-    ArrayList<BluetoothDevice> BLEDeviceList;
+    ArrayList<ScanResult> BLEScanList;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -54,7 +54,7 @@ public class DeviceScanActivity extends AppCompatActivity {
 
         peripheralListView = (ListView) findViewById(R.id.peripheralListView);
         deviceList=new ArrayList<Device>();
-        BLEDeviceList = new ArrayList<BluetoothDevice>();
+        BLEScanList = new ArrayList<ScanResult>();
         count = 0;
         myAdapter = new myArrayAdapter(context,deviceList);
         peripheralListView.setAdapter(myAdapter);
@@ -105,7 +105,7 @@ public class DeviceScanActivity extends AppCompatActivity {
                 Intent intent= new Intent(context,RecvActivity.class);
                 intent.putExtra("Mac",deviceList.get(i).getMac());
                 intent.putExtra("Name",deviceList.get(i).getName());
-                intent.putExtra("Device",BLEDeviceList.get(i));
+                intent.putExtra("Device",BLEScanList.get(i));
                 startActivity(intent);
                 stopScanning();
             }
@@ -128,14 +128,14 @@ public class DeviceScanActivity extends AppCompatActivity {
                 Device check=deviceList.get(i);
                 if(check.getMac().equals(mac)){
                     check.setRSSI(result.getRssi());
-                    BLEDeviceList.set(i,newBLEDevice);
+                    BLEScanList.set(i,result);
                     break;
                 }
             }
             if(i==count)
             {
                 Device newDevice = new Device(name,result.getRssi(),mac);
-                BLEDeviceList.add(newBLEDevice);
+                BLEScanList.add(result);
                 deviceList.add(newDevice);
                 count++;
             }
@@ -174,7 +174,7 @@ public class DeviceScanActivity extends AppCompatActivity {
             stopScanningButton.setVisibility(View.VISIBLE);
             count=0;
             deviceList.clear();
-            BLEDeviceList.clear();
+            BLEScanList.clear();
             ((myArrayAdapter)peripheralListView.getAdapter()).notifyDataSetChanged();
             AsyncTask.execute(new Runnable() {
                 @Override
