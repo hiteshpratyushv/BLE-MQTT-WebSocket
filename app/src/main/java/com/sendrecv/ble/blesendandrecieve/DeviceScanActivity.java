@@ -3,6 +3,7 @@ package com.sendrecv.ble.blesendandrecieve;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -18,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,7 +41,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     int count;
     ArrayList<Device> deviceList;
-
+    ArrayList<BluetoothDevice> BLEDeviceList;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -52,6 +54,7 @@ public class DeviceScanActivity extends AppCompatActivity {
 
         peripheralListView = (ListView) findViewById(R.id.peripheralListView);
         deviceList=new ArrayList<Device>();
+        BLEDeviceList = new ArrayList<BluetoothDevice>();
         count = 0;
         myAdapter = new myArrayAdapter(context,deviceList);
         peripheralListView.setAdapter(myAdapter);
@@ -96,17 +99,17 @@ public class DeviceScanActivity extends AppCompatActivity {
             builder.show();
         }
 
-        /*peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent= new Intent(context,SelectionActivity.class);
+                Intent intent= new Intent(context,RecvActivity.class);
                 intent.putExtra("Mac",deviceList.get(i).getMac());
                 intent.putExtra("Name",deviceList.get(i).getName());
                 intent.putExtra("Device",BLEDeviceList.get(i));
                 startActivity(intent);
                 stopScanning();
             }
-        });*/
+        });
     }
 
     // Device scan callback.
@@ -114,9 +117,9 @@ public class DeviceScanActivity extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             System.out.println(result);
-            //BluetoothDevice newBLEDevice = result.getDevice();
-            String name=result.getDevice().getName();
-            String mac=result.getDevice().getAddress();
+            BluetoothDevice newBLEDevice = result.getDevice();
+            String name=newBLEDevice.getName();
+            String mac=newBLEDevice.getAddress();
             if(name==null)
                 name="Unknown";
             int i;
@@ -125,14 +128,14 @@ public class DeviceScanActivity extends AppCompatActivity {
                 Device check=deviceList.get(i);
                 if(check.getMac().equals(mac)){
                     check.setRSSI(result.getRssi());
-                    //BLEDeviceList.set(i,newBLEDevice);
+                    BLEDeviceList.set(i,newBLEDevice);
                     break;
                 }
             }
             if(i==count)
             {
                 Device newDevice = new Device(name,result.getRssi(),mac);
-                //BLEDeviceList.add(newBLEDevice);
+                BLEDeviceList.add(newBLEDevice);
                 deviceList.add(newDevice);
                 count++;
             }
@@ -171,6 +174,7 @@ public class DeviceScanActivity extends AppCompatActivity {
             stopScanningButton.setVisibility(View.VISIBLE);
             count=0;
             deviceList.clear();
+            BLEDeviceList.clear();
             ((myArrayAdapter)peripheralListView.getAdapter()).notifyDataSetChanged();
             AsyncTask.execute(new Runnable() {
                 @Override
