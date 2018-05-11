@@ -5,19 +5,17 @@ public class Device {
     private int rssi;
     private String mac;
 
-    public Device(String name,int rssi,String mac)
-    {
-        this.name=name;
-        this.rssi=rssi;
-        this.mac=mac;
+    public Device(String name, int rssi, String mac) {
+        this.name = name;
+        this.rssi = rssi;
+        this.mac = mac;
     }
-    public String getName()
-    {
+
+    public String getName() {
         return name;
     }
 
-    public int getRSSI()
-    {
+    public int getRSSI() {
         return rssi;
     }
 
@@ -25,14 +23,12 @@ public class Device {
         return mac;
     }
 
-    public void setName(String name)
-    {
-        this.name=name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setRSSI(int rssi)
-    {
-        this.rssi=rssi;
+    public void setRSSI(int rssi) {
+        this.rssi = rssi;
     }
 
     public void setMac(String mac) {

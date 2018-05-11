@@ -14,10 +14,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -49,14 +49,14 @@ public class DeviceScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_scan);
 
-        selectText=(TextView)findViewById(R.id.selectText);
+        selectText = (TextView) findViewById(R.id.selectText);
         selectText.setVisibility(View.INVISIBLE);
 
         peripheralListView = (ListView) findViewById(R.id.peripheralListView);
-        deviceList=new ArrayList<Device>();
+        deviceList = new ArrayList<Device>();
         BLEScanList = new ArrayList<ScanResult>();
         count = 0;
-        myAdapter = new myArrayAdapter(context,deviceList);
+        myAdapter = new myArrayAdapter(context, deviceList);
         peripheralListView.setAdapter(myAdapter);
 
         startScanningButton = (Button) findViewById(R.id.StartScanButton);
@@ -102,10 +102,10 @@ public class DeviceScanActivity extends AppCompatActivity {
         peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent= new Intent(context,RecvActivity.class);
-                intent.putExtra("Mac",deviceList.get(i).getMac());
-                intent.putExtra("Name",deviceList.get(i).getName());
-                intent.putExtra("Device",BLEScanList.get(i));
+                Intent intent = new Intent(context, RecvActivity.class);
+                intent.putExtra("Mac", deviceList.get(i).getMac());
+                intent.putExtra("Name", deviceList.get(i).getName());
+                intent.putExtra("Device", BLEScanList.get(i));
                 startActivity(intent);
                 stopScanning();
             }
@@ -118,81 +118,79 @@ public class DeviceScanActivity extends AppCompatActivity {
         public void onScanResult(int callbackType, ScanResult result) {
             System.out.println(result);
             BluetoothDevice newBLEDevice = result.getDevice();
-            String name=newBLEDevice.getName();
-            String mac=newBLEDevice.getAddress();
-            if(name==null)
-                name="Unknown";
+            String name = newBLEDevice.getName();
+            String mac = newBLEDevice.getAddress();
+            if (name == null)
+                name = "Unknown";
             int i;
-            for(i=0;i<count;i++)
-            {
-                Device check=deviceList.get(i);
-                if(check.getMac().equals(mac)){
+            for (i = 0; i < count; i++) {
+                Device check = deviceList.get(i);
+                if (check.getMac().equals(mac)) {
                     check.setRSSI(result.getRssi());
-                    BLEScanList.set(i,result);
+                    BLEScanList.set(i, result);
                     break;
                 }
             }
-            if(i==count)
-            {
-                Device newDevice = new Device(name,result.getRssi(),mac);
+            if (i == count) {
+                Device newDevice = new Device(name, result.getRssi(), mac);
                 BLEScanList.add(result);
                 deviceList.add(newDevice);
                 count++;
             }
-            ((myArrayAdapter)peripheralListView.getAdapter()).notifyDataSetChanged();
+            ((myArrayAdapter) peripheralListView.getAdapter()).notifyDataSetChanged();
         }
     };
 
-        @Override
-        public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-            switch (requestCode) {
-                case PERMISSION_REQUEST_COARSE_LOCATION: {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        System.out.println("coarse location permission granted");
-                    } else {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("Functionality limited");
-                        builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
-                        builder.setPositiveButton(android.R.string.ok, null);
-                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("coarse location permission granted");
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                            }
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                        }
 
-                        });
-                        builder.show();
-                    }
+                    });
+                    builder.show();
                 }
             }
         }
+    }
 
-        public void startScanning() {
-            System.out.println("start scanning");
-            startScanningButton.setVisibility(View.INVISIBLE);
-            selectText.setVisibility(View.VISIBLE);
-            stopScanningButton.setVisibility(View.VISIBLE);
-            count=0;
-            deviceList.clear();
-            BLEScanList.clear();
-            ((myArrayAdapter)peripheralListView.getAdapter()).notifyDataSetChanged();
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    btScanner.startScan(leScanCallback);
-                }
-            });
-        }
+    public void startScanning() {
+        System.out.println("start scanning");
+        startScanningButton.setVisibility(View.INVISIBLE);
+        selectText.setVisibility(View.VISIBLE);
+        stopScanningButton.setVisibility(View.VISIBLE);
+        count = 0;
+        deviceList.clear();
+        BLEScanList.clear();
+        ((myArrayAdapter) peripheralListView.getAdapter()).notifyDataSetChanged();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                btScanner.startScan(leScanCallback);
+            }
+        });
+    }
 
-        public void stopScanning() {
-            System.out.println("stopping scanning");
-            startScanningButton.setVisibility(View.VISIBLE);
-            stopScanningButton.setVisibility(View.INVISIBLE);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    btScanner.stopScan(leScanCallback);
-                }
-            });
-        }
+    public void stopScanning() {
+        System.out.println("stopping scanning");
+        startScanningButton.setVisibility(View.VISIBLE);
+        stopScanningButton.setVisibility(View.INVISIBLE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                btScanner.stopScan(leScanCallback);
+            }
+        });
+    }
 }
