@@ -13,30 +13,33 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/peripheralListView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
         android:text="Scan" />
 
     <Button
         android:id="@+id/StopScanButton"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_alignStart="@+id/StartScanButton"
         android:layout_alignTop="@+id/StartScanButton"
+        android:layout_centerHorizontal="true"
         android:text="Stop Scanning" />
 
     <TextView
+        android:id="@+id/selectText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:text="Select The Bluetooth Device Below:"
-        android:id="@+id/selectText"/>
+        android:layout_marginTop="102dp"
+        android:text="Select The Bluetooth Device Below:" />
 
     <ListView
         android:id="@+id/peripheralListView"
         android:layout_width="wrap_content"
         android:layout_height="354dp"
-        android:layout_centerInParent="true"></ListView>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="72dp"></ListView>
 
 </RelativeLayout>

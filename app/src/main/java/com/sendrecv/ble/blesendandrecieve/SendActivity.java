@@ -19,9 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
@@ -33,7 +30,6 @@ public class SendActivity extends AppCompatActivity {
     Context context = this;
     BluetoothLeAdvertiser advertiser;
     EditText getData;
-    TextView dispmac;
     Button startSending, stopSending;
     AdvertiseSettings aSettings;
     ParcelUuid pUuid;
@@ -58,18 +54,17 @@ public class SendActivity extends AppCompatActivity {
         startSending = (Button) findViewById(R.id.startSending);
         stopSending = (Button) findViewById(R.id.stopSending);
 
-        dispmac=(TextView)findViewById(R.id.dispmac);
-        dispmac.setText(getBluetoothMacAddress());
-
         btManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
+        btAdapter.setName("Adv");
 
         if (btAdapter != null && !btAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
 
-        advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+        advertiser = btAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+
 
         aSettings = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
@@ -104,7 +99,7 @@ public class SendActivity extends AppCompatActivity {
                 }
                 int i = 1;
                 aData = new AdvertiseData.Builder()
-                        .setIncludeDeviceName(false)
+                        .setIncludeDeviceName(true)
                         .addServiceData(pUuid, data.getBytes(Charset.forName("UTF-8")))
                         .build();
 
@@ -132,33 +127,4 @@ public class SendActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private String getBluetoothMacAddress() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        String bluetoothMacAddress = "";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
-            try {
-                Field mServiceField = bluetoothAdapter.getClass().getDeclaredField("mService");
-                mServiceField.setAccessible(true);
-
-                Object btManagerService = mServiceField.get(bluetoothAdapter);
-
-                if (btManagerService != null) {
-                    bluetoothMacAddress = (String) btManagerService.getClass().getMethod("getAddress").invoke(btManagerService);
-                }
-            } catch (NoSuchFieldException e) {
-
-            } catch (NoSuchMethodException e) {
-
-            } catch (IllegalAccessException e) {
-
-            } catch (InvocationTargetException e) {
-
-            }
-        } else {
-            bluetoothMacAddress = bluetoothAdapter.getAddress();
-        }
-        return bluetoothMacAddress;
-    }
-
 }

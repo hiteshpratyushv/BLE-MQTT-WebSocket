@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="24dp"
         android:text="Enter text to be Advertised"
         android:textSize="30sp" />
 
@@ -26,8 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:hint="Text to advertise"
-        android:layout_marginTop="129dp" />
+        android:layout_marginTop="105dp"
+        android:hint="Text to advertise" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="264dp"
+        android:layout_marginTop="212dp"
         android:orientation="horizontal">
 
         <Button
@@ -66,18 +66,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="153dp"
+        android:layout_marginBottom="220dp"
         android:text="     Device is advertising"
         android:textSize="30sp"
         android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/dispmac"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="210dp"
-        android:text=" "/>
 
 </RelativeLayout>
