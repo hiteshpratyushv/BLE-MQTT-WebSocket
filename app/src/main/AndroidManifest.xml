@@ -4,12 +4,14 @@
     package="com.sendrecv.ble.blesendandrecieve">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -22,27 +24,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SelectionActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".SendActivity" >
+        <activity android:name=".SelectionActivity"/>
+        <activity android:name=".SendActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SelectionActivity" />
         </activity>
-        <activity android:name=".RecvActivity" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".DeviceScanActivity" />
-    </activity>
+        <activity android:name=".RecvActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DeviceScanActivity" />
+        </activity>
         <activity android:name=".DeviceScanActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SelectionActivity" />
         </activity>
+        <activity android:name=".BLEMQTTSelect" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".SubPubMenu" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <activity android:name=".SubscribeActivity" />
+        <activity android:name=".PublishActivity"></activity>
     </application>
 
 </manifest>
