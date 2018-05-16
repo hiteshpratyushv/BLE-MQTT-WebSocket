@@ -20,7 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class PublishActivity extends AppCompatActivity {
 
     Button pubConnect,pubDisconnect,pubPub;
-    EditText messagemqtt;
+    EditText messagemqtt,ipinputpublish;
     String clientId;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -32,18 +32,20 @@ public class PublishActivity extends AppCompatActivity {
         pubPub=(Button)findViewById(R.id.pubpub);
         pubDisconnect=(Button)findViewById(R.id.pubDisconnect);
         messagemqtt=(EditText)findViewById(R.id.messagemqtt) ;
+        ipinputpublish=(EditText)findViewById(R.id.ipinputpublish);
         clientId = MqttClient.generateClientId();
 
 
         pubConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(), "tcp://m11.cloudmqtt.com:16515", clientId);
-                options = new MqttConnectOptions();
+                client = new MqttAndroidClient(getApplicationContext(),"tcp://"+ipinputpublish.getText().toString()+":1883"
+                        , clientId);
+                /*options = new MqttConnectOptions();
                 options.setUserName("vsptbtrg");
-                options.setPassword("Zb5IXem-B2Rw".toCharArray());
+                options.setPassword("Zb5IXem-B2Rw".toCharArray());*/
                 try {
-                    IMqttToken token = client.connect(options);
+                    IMqttToken token = client.connect(/*options*/);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
@@ -52,6 +54,8 @@ public class PublishActivity extends AppCompatActivity {
                             pubConnect.setVisibility(View.INVISIBLE);
                             pubDisconnect.setVisibility(View.VISIBLE);
                             pubPub.setVisibility(View.VISIBLE);
+                            ipinputpublish.setVisibility(View.INVISIBLE);
+                            messagemqtt.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -110,6 +114,7 @@ public class PublishActivity extends AppCompatActivity {
                     pubPub.setVisibility(View.INVISIBLE);
                     pubDisconnect.setVisibility(View.INVISIBLE);
                     pubConnect.setVisibility(View.VISIBLE);
+                    ipinputpublish.setVisibility(View.VISIBLE);
                 }
 
                 @Override

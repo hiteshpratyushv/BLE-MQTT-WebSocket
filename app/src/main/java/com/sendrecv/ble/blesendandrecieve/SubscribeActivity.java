@@ -26,6 +26,7 @@ import java.util.List;
 
 public class SubscribeActivity extends AppCompatActivity {
     Button subConnect,subDisconnect,subSub,subUnsub;
+    EditText ipinputsubscribe;
     ListView messageListView;
     ArrayList<String> messageList;
     ArrayAdapter adapter;
@@ -41,6 +42,7 @@ public class SubscribeActivity extends AppCompatActivity {
         subSub=(Button)findViewById(R.id.subsub);
         subUnsub=(Button)findViewById(R.id.subunsub);
         subDisconnect=(Button)findViewById(R.id.subDisconnect);
+        ipinputsubscribe=(EditText)findViewById(R.id.ipinputsubscribe);
         messageListView=(ListView)findViewById(R.id.messageListView);
         messageList=new ArrayList<String>();
         adapter = new ArrayAdapter<String>(this,R.layout.message_list,messageList);
@@ -51,12 +53,13 @@ public class SubscribeActivity extends AppCompatActivity {
         subConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(), "tcp://m11.cloudmqtt.com:16515", clientId);
-                options = new MqttConnectOptions();
+                client = new MqttAndroidClient(getApplicationContext(), "tcp://"+ipinputsubscribe.getText().toString()+":1883"
+                        , clientId);
+               /* options = new MqttConnectOptions();
                 options.setUserName("vsptbtrg");
-                options.setPassword("Zb5IXem-B2Rw".toCharArray());
+                options.setPassword("Zb5IXem-B2Rw".toCharArray());*/
                 try {
-                    IMqttToken token = client.connect(options);
+                    IMqttToken token = client.connect(/*options*/);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
@@ -65,6 +68,7 @@ public class SubscribeActivity extends AppCompatActivity {
                             subConnect.setVisibility(View.INVISIBLE);
                             subDisconnect.setVisibility(View.VISIBLE);
                             subSub.setVisibility(View.VISIBLE);
+                            ipinputsubscribe.setVisibility(View.INVISIBLE);
                         }
 
                         @Override
@@ -105,6 +109,8 @@ public class SubscribeActivity extends AppCompatActivity {
                     unsubscribe();
                 }
                 disconnect();
+                subConnect.setVisibility(View.VISIBLE);
+                ipinputsubscribe.setVisibility(View.VISIBLE);
             }
         });
 
