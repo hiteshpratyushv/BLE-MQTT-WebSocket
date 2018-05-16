@@ -1,9 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SubscribeActivity">
+    tools:context=".PublishActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/subConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/subsub"
+        android:layout_toEndOf="@+id/subsub"
+        android:text="Connect" />
+
+    <Button
+        android:id="@+id/subsub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/subDisconnect"
+        android:layout_marginStart="61dp"
+        android:text="Subscribe"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/subunsub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/subsub"
+        android:layout_alignTop="@+id/subConnect"
+        android:text="Unsubscribe"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/subDisconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="97dp"
+        android:layout_marginTop="71dp"
+        android:text="Disconnect"
+        android:visibility="invisible" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/messageListView"
+        android:layout_height="438dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="0dp"/>
+
+</RelativeLayout>
