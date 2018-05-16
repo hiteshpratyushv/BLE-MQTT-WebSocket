@@ -76,6 +76,7 @@ public class PublishActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 disconnect();
+                messagemqtt.setVisibility(View.INVISIBLE);
             }
         });
 
