@@ -1,10 +1,9 @@
 package com.sendrecv.ble.blesendandrecieve;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,39 +16,41 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.InputStream;
+
 public class PublishActivity extends AppCompatActivity {
 
-    Button pubConnect,pubDisconnect,pubPub;
-    EditText messagemqtt,ipinputpublish;
+    Button pubConnect, pubDisconnect, pubPub;
+    EditText messagemqtt, ipinputpublish;
     String clientId;
     MqttAndroidClient client;
     MqttConnectOptions options;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish);
-        pubConnect=(Button)findViewById(R.id.pubConnect);
-        pubPub=(Button)findViewById(R.id.pubpub);
-        pubDisconnect=(Button)findViewById(R.id.pubDisconnect);
-        messagemqtt=(EditText)findViewById(R.id.messagemqtt) ;
-        ipinputpublish=(EditText)findViewById(R.id.ipinputpublish);
+        pubConnect = (Button) findViewById(R.id.pubConnect);
+        pubPub = (Button) findViewById(R.id.pubpub);
+        pubDisconnect = (Button) findViewById(R.id.pubDisconnect);
+        messagemqtt = (EditText) findViewById(R.id.messagemqtt);
+        ipinputpublish = (EditText) findViewById(R.id.ipinputpublish);
         clientId = MqttClient.generateClientId();
 
 
         pubConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(),"tcp://"+ipinputpublish.getText().toString()+":1883"
-                        , clientId);
-                /*options = new MqttConnectOptions();
-                options.setUserName("vsptbtrg");
-                options.setPassword("Zb5IXem-B2Rw".toCharArray());*/
                 try {
-                    IMqttToken token = client.connect(/*options*/);
+                    client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:8883", clientId);
+                    InputStream input = getApplicationContext().getResources().openRawResource(R.raw.mykeystore);
+                    options = new MqttConnectOptions();
+                    options.setSocketFactory(client.getSSLSocketFactory(input,"password"));
+                    IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
-                            Log.d("Connection", "Connected to Broker ");
+                            //Log.d("Connection", "Connected to Broker ");
                             //Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerMade", Toast.LENGTH_SHORT).show();
                             pubConnect.setVisibility(View.INVISIBLE);
                             pubDisconnect.setVisibility(View.VISIBLE);
@@ -60,14 +61,14 @@ public class PublishActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                            //Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getApplicationContext(),exception.toString(),Toast.LENGTH_LONG).show();
+                           // Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                             Log.d("Connection", "Unable to connect to Broker");
                         }
                     });
-                } catch (MqttException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -101,12 +102,11 @@ public class PublishActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(pubConnect.getVisibility()==View.INVISIBLE)
+        if (pubConnect.getVisibility() == View.INVISIBLE)
             disconnect();
     }
 
-    public void disconnect()
-    {
+    public void disconnect() {
         try {
             IMqttToken disconToken = client.disconnect();
             disconToken.setActionCallback(new IMqttActionListener() {

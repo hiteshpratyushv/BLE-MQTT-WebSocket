@@ -53,7 +53,7 @@ public class SubscribeActivity extends AppCompatActivity {
         subConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(), "tcp://"+ipinputsubscribe.getText().toString()+":1883"
+                client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputsubscribe.getText().toString()+":8883"
                         , clientId);
                /* options = new MqttConnectOptions();
                 options.setUserName("vsptbtrg");
