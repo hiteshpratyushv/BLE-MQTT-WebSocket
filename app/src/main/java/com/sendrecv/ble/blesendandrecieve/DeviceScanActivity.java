@@ -117,11 +117,8 @@ public class DeviceScanActivity extends AppCompatActivity {
         peripheralListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(context, RecvActivity.class);
-                intent.putExtra("Mac", deviceList.get(i).getMac());
-                intent.putExtra("Name", deviceList.get(i).getName());
-                intent.putExtra("Device", BLEScanList.get(i));
-                startActivity(intent);
+                DeviceDialog deviceDialog = new DeviceDialog(context,BLEScanList.get(i));
+                deviceDialog.show();
                 stopScanning();
             }
         });

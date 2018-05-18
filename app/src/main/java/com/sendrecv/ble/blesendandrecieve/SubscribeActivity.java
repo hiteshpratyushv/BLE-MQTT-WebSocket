@@ -1,5 +1,6 @@
 package com.sendrecv.ble.blesendandrecieve;
 
+import android.net.SSLCertificateSocketFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +20,20 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.internal.security.SSLSocketFactoryFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 
 public class SubscribeActivity extends AppCompatActivity {
@@ -49,17 +61,22 @@ public class SubscribeActivity extends AppCompatActivity {
         clientId = MqttClient.generateClientId();
         messageListView.setAdapter(adapter);
 
-
         subConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputsubscribe.getText().toString()+":8883"
-                        , clientId);
-               /* options = new MqttConnectOptions();
-                options.setUserName("vsptbtrg");
-                options.setPassword("Zb5IXem-B2Rw".toCharArray());*/
+                client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:1883", clientId);
                 try {
-                    IMqttToken token = client.connect(/*options*/);
+                    KeyStore ksTrust = KeyStore.getInstance("BKS");
+                    InputStream instream = getApplicationContext().getAssets().open("caandpem");
+                    ksTrust.load(instream, "password".toCharArray());
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                    tmf.init(ksTrust);
+                    SSLContext sslContext = SSLContext.getInstance("TLS");
+                    sslContext.init(null, tmf.getTrustManagers(), null);
+                   // InputStream input = getApplicationContext().getAssets().open("caandpem");
+                    options = new MqttConnectOptions();
+                    options.setSocketFactory(sslContext.getSocketFactory());
+                    IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
@@ -74,11 +91,12 @@ public class SubscribeActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                             //Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(getApplicationContext(),exception.getMessage(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),exception.toString(),Toast.LENGTH_LONG).show();
+                            Log.d("Connection Error",exception.toString());
                             Log.d("Connection", "Unable to connect to Broker");
                         }
                     });
-                } catch (MqttException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 client.setCallback(new MqttCallback() {

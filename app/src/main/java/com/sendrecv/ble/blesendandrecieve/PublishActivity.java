@@ -15,8 +15,12 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.InputStream;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 public class PublishActivity extends AppCompatActivity {
 
@@ -37,20 +41,19 @@ public class PublishActivity extends AppCompatActivity {
         ipinputpublish = (EditText) findViewById(R.id.ipinputpublish);
         clientId = MqttClient.generateClientId();
 
-
         pubConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:8883", clientId);
-                    InputStream input = getApplicationContext().getResources().openRawResource(R.raw.mykeystore);
+                    client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:1883", clientId);
+                    InputStream input = getApplicationContext().getAssets().open("caandpem");
                     options = new MqttConnectOptions();
                     options.setSocketFactory(client.getSSLSocketFactory(input,"password"));
                     IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
-                            //Log.d("Connection", "Connected to Broker ");
+                            Log.d("Connection", "Connected to Broker ");
                             //Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerMade", Toast.LENGTH_SHORT).show();
                             pubConnect.setVisibility(View.INVISIBLE);
                             pubDisconnect.setVisibility(View.VISIBLE);
@@ -62,7 +65,8 @@ public class PublishActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                            // Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), exception.toString(), Toast.LENGTH_LONG).show();
+                            Log.e("Connection Error", exception.toString());
                             Log.d("Connection", "Unable to connect to Broker");
                         }
                     });
