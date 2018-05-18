@@ -17,6 +17,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.InputStream;
+import java.security.KeyStore;
+
+import javax.net.ssl.SSLSocketFactory;
 
 public class PublishActivity extends AppCompatActivity {
 
@@ -41,10 +44,11 @@ public class PublishActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:1883", clientId);
-                    InputStream input = getApplicationContext().getAssets().open("caandpem");
+                    client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputpublish.getText().toString()+
+                            ":1883", clientId);
+                    InputStream input = getApplicationContext().getAssets().open("keystore.bks");
                     options = new MqttConnectOptions();
-                    options.setSocketFactory(client.getSSLSocketFactory(input,"password"));
+                    options.setSocketFactory(client.getSSLSocketFactory(input, "password"));
                     IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
@@ -60,7 +64,7 @@ public class PublishActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                           // Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getApplicationContext(),"ConnectiontoMQTTBrokerRejected", Toast.LENGTH_SHORT).show();
                             Toast.makeText(getApplicationContext(), exception.toString(), Toast.LENGTH_LONG).show();
                             Log.e("Connection Error", exception.toString());
                             Log.d("Connection", "Unable to connect to Broker");

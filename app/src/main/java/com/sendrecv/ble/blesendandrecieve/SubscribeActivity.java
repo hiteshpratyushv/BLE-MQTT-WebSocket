@@ -64,18 +64,13 @@ public class SubscribeActivity extends AppCompatActivity {
         subConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new MqttAndroidClient(getApplicationContext(), "ssl://192.168.43.112:1883", clientId);
+                client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputsubscribe.getText().toString()+
+                        ":1883", clientId);
                 try {
                     KeyStore ksTrust = KeyStore.getInstance("BKS");
-                    InputStream instream = getApplicationContext().getAssets().open("caandpem");
-                    ksTrust.load(instream, "password".toCharArray());
-                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                    tmf.init(ksTrust);
-                    SSLContext sslContext = SSLContext.getInstance("TLS");
-                    sslContext.init(null, tmf.getTrustManagers(), null);
-                   // InputStream input = getApplicationContext().getAssets().open("caandpem");
+                    InputStream input = getApplicationContext().getAssets().open("keystore.bks");
                     options = new MqttConnectOptions();
-                    options.setSocketFactory(sslContext.getSocketFactory());
+                    options.setSocketFactory(client.getSSLSocketFactory(input, "password"));
                     IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
