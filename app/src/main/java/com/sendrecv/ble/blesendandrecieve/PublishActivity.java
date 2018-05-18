@@ -15,12 +15,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.InputStream;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 
 public class PublishActivity extends AppCompatActivity {
 
