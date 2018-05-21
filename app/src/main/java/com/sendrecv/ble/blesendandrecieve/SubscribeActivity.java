@@ -68,9 +68,9 @@ public class SubscribeActivity extends AppCompatActivity {
                         ":1883", clientId);
                 try {
                     KeyStore ksTrust = KeyStore.getInstance("BKS");
-                    InputStream input = getApplicationContext().getAssets().open("keystore.bks");
+                    InputStream input = getApplicationContext().getAssets().open("truststore.bks");
                     options = new MqttConnectOptions();
-                    options.setSocketFactory(client.getSSLSocketFactory(input, "password"));
+                    options.setSocketFactory(PublishActivity.getSSLSocketFactory(input,"password"));
                     IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override

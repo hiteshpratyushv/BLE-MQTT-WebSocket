@@ -15,11 +15,20 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 public class PublishActivity extends AppCompatActivity {
 
@@ -48,7 +57,7 @@ public class PublishActivity extends AppCompatActivity {
                             ":1883", clientId);
                     InputStream input = getApplicationContext().getAssets().open("keystore.bks");
                     options = new MqttConnectOptions();
-                    options.setSocketFactory(client.getSSLSocketFactory(input, "password"));
+                    options.setSocketFactory(getSSLSocketFactory(input,"password"));
                     IMqttToken token = client.connect(options);
                     token.setActionCallback(new IMqttActionListener() {
                         @Override
@@ -130,6 +139,32 @@ public class PublishActivity extends AppCompatActivity {
             });
         } catch (MqttException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static SSLSocketFactory getSSLSocketFactory (InputStream keyStore, String password) throws MqttSecurityException {
+        try {
+            SSLContext ctx = null;
+            SSLSocketFactory sslSockFactory=null;
+            KeyStore ks;
+            ks = KeyStore.getInstance("BKS");
+            ks.load(keyStore, password.toCharArray());
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+            tmf.init(ks);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            try {
+                kmf.init(ks, null);
+            } catch (Exception e ) {
+                Log.d("KeyManagerFactory", e.getMessage());
+            }
+            ctx = SSLContext.getInstance("TLSv1");
+            ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+            sslSockFactory=ctx.getSocketFactory();
+            return sslSockFactory;
+        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | KeyManagementException e) {
+            throw new MqttSecurityException(e);
         }
     }
 }
