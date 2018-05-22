@@ -55,7 +55,7 @@ public class PublishActivity extends AppCompatActivity {
                 try {
                     client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputpublish.getText().toString()+
                             ":1883", clientId);
-                    InputStream input = getResources().openRawResource(R.raw.justca);
+                    InputStream input = getResources().openRawResource(R.raw.keystore);
                     options = new MqttConnectOptions();
                     options.setSocketFactory(getSSLSocketFactory(input,"password"));
                     IMqttToken token = client.connect(options);
