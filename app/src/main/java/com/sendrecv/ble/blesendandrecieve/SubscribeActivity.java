@@ -137,6 +137,22 @@ public class SubscribeActivity extends AppCompatActivity {
                         public void onSuccess(IMqttToken asyncActionToken) {
                             subSub.setVisibility(View.INVISIBLE);
                             subUnsub.setVisibility(View.VISIBLE);
+                            client.setCallback(new MqttCallback() {
+                                @Override
+                                public void connectionLost(Throwable throwable) {
+                                    //do nothing
+                                }
+
+                                @Override
+                                public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+                                    adapter.add(new String(mqttMessage.getPayload()));
+                                }
+
+                                @Override
+                                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                                    //do nothing
+                                }
+                            });
                         }
 
                         @Override
