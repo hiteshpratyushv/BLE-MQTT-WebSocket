@@ -143,28 +143,28 @@ public class PublishActivity extends AppCompatActivity {
     }
 
     public static SSLSocketFactory getSSLSocketFactory (InputStream keyStore, String password) throws MqttSecurityException {
-        try {
-            SSLContext ctx = null;
-            SSLSocketFactory sslSockFactory=null;
-            KeyStore ks;
-            ks = KeyStore.getInstance("BKS");
-            ks.load(keyStore, password.toCharArray());
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
-            tmf.init(ks);
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             try {
-                kmf.init(ks, null);
-            } catch (Exception e ) {
-                Log.d("KeyManagerFactory", e.getMessage());
-            }
-            ctx = SSLContext.getInstance("TLSv1");
-            ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+                SSLContext ctx = null;
+                SSLSocketFactory sslSockFactory=null;
+                KeyStore ks;
+                ks = KeyStore.getInstance("BKS");
+                ks.load(keyStore, password.toCharArray());
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+                tmf.init(ks);
 
-            sslSockFactory=ctx.getSocketFactory();
-            return sslSockFactory;
-        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | KeyManagementException e) {
-            throw new MqttSecurityException(e);
-        }
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                try {
+                    kmf.init(ks, null);
+                } catch (Exception e ) {
+                    Log.d("KeyManagerFactory", e.getMessage());
+                }
+                ctx = SSLContext.getInstance("TLSv1");
+                ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+                sslSockFactory=ctx.getSocketFactory();
+                return sslSockFactory;
+            } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | KeyManagementException e) {
+                throw new MqttSecurityException(e);
+            }
     }
 }
