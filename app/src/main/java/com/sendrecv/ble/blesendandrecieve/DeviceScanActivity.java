@@ -15,7 +15,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class DeviceScanActivity extends AppCompatActivity {
 
@@ -41,7 +39,6 @@ public class DeviceScanActivity extends AppCompatActivity {
     myArrayAdapter myAdapter;
     Button stopScanningButton;
     ListView peripheralListView;
-    ParcelUuid uuid;
     TextView selectText;
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -72,7 +69,6 @@ public class DeviceScanActivity extends AppCompatActivity {
         count = 0;
         myAdapter = new myArrayAdapter(context, deviceList);
         peripheralListView.setAdapter(myAdapter);
-        uuid=new ParcelUuid(UUID.fromString(getString(R.string.ble_uuid)));
 
         startScanningButton = (Button) findViewById(R.id.StartScanButton);
         startScanningButton.setOnClickListener(new View.OnClickListener() {
