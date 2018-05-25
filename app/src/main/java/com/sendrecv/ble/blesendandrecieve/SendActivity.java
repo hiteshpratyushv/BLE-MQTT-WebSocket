@@ -100,6 +100,7 @@ public class SendActivity extends AppCompatActivity {
                 int i = 1;
                 aData = new AdvertiseData.Builder()
                         .setIncludeDeviceName(true)
+                        .addServiceUuid(pUuid)
                         .addServiceData(pUuid, data.getBytes(Charset.forName("UTF-8")))
                         .build();
 
