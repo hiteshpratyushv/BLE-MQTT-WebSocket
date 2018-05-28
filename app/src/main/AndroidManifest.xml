@@ -24,7 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SelectionActivity"/>
+        <activity android:name=".SelectionActivity" />
         <activity android:name=".SendActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,7 +35,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SelectionActivity" />
         </activity>
-        <activity android:name=".BLEMQTTSelect" >
+        <activity android:name=".BLEMQTTSelect">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,7 +47,8 @@
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <activity android:name=".SubscribeActivity" />
-        <activity android:name=".PublishActivity"></activity>
+        <activity android:name=".PublishActivity" />
+        <activity android:name=".WebSocketActivity"></activity>
     </application>
 
 </manifest>

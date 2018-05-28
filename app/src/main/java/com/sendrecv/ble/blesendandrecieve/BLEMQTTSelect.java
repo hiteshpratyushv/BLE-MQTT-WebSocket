@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class BLEMQTTSelect extends AppCompatActivity {
 
-    Button mqtt,ble;
+    Button mqtt,ble,websocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,6 +16,7 @@ public class BLEMQTTSelect extends AppCompatActivity {
 
         ble=(Button)findViewById(R.id.ble);
         mqtt=(Button)findViewById(R.id.mqtt);
+        websocket = (Button)findViewById(R.id.websocket);
 
         ble.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +31,14 @@ public class BLEMQTTSelect extends AppCompatActivity {
             public void onClick(View view) {
                 Intent mqttI = new Intent(getApplicationContext(),SubPubMenu.class);
                 startActivity(mqttI);
+            }
+        });
+
+        websocket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent websocketI = new Intent(getApplicationContext(),WebSocketActivity.class);
+                startActivity(websocketI);
             }
         });
     }

@@ -28,4 +28,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
 }
