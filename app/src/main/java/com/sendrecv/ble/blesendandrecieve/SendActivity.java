@@ -67,8 +67,8 @@ public class SendActivity extends AppCompatActivity {
 
 
         aSettings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_LOW)
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
                 .setConnectable(false)
                 .build();
 
@@ -100,7 +100,7 @@ public class SendActivity extends AppCompatActivity {
                 int i = 1;
                 aData = new AdvertiseData.Builder()
                         .setIncludeDeviceName(true)
-                        .addServiceUuid(pUuid)
+                        //.addServiceUuid(pUuid)
                         .addServiceData(pUuid, data.getBytes(Charset.forName("UTF-8")))
                         .build();
 
