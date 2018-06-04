@@ -6,21 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".WebSocketActivity">
 
+    <EditText
+        android:id="@+id/getIP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="34dp"
+        android:hint="Enter IP" />
+
     <Button
-        android:id="@+id/wsstart"
+        android:id="@+id/wsconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="169dp"
-        android:text="Start" />
+        android:layout_marginTop="131dp"
+        android:text="Connect" />
 
     <TextView
         android:id="@+id/wsmessages"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="280dp" />
+
+    <Button
+        android:id="@+id/wssend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/wsconnect"
+        android:layout_marginStart="35dp"
+        android:text="Send"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/wsdisconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/wsconnect"
+        android:layout_marginEnd="32dp"
+        android:text="Disconnect"
+        android:visibility="invisible" />
 
 </RelativeLayout>

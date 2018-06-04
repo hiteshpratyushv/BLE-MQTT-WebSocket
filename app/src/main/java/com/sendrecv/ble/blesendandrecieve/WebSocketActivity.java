@@ -1,75 +1,95 @@
 package com.sendrecv.ble.blesendandrecieve;
 
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
+import com.codebutler.android_websockets.WebSocketClient;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.List;
+
 
 public class WebSocketActivity extends AppCompatActivity {
 
-    Button start;
+    public final String TAG = "WebSocketClient";
+    Button connect,disconnect,send;
     TextView messages;
-    OkHttpClient client;
+    EditText getIP;
+    WebSocketClient client;
 
-    private final class EchoWebSocketListener extends WebSocketListener{
-        private static final int NORMAL_CLOSURE_STATUS =1000;
-
-        @Override
-        public void onOpen(WebSocket webSocket, Response response) {
-            webSocket.send("Hey");
-            webSocket.close(NORMAL_CLOSURE_STATUS,"Bye");
-        }
-
-        @Override
-        public void onMessage(WebSocket webSocket, String text) {
-            output("Receiving :"+text);
-        }
-
-        @Override
-        public void onClosed(WebSocket webSocket, int code, String reason) {
-            webSocket.close(NORMAL_CLOSURE_STATUS,null);
-            output("Closing : "+code+"/"+reason);
-        }
-
-        @Override
-        public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
-            output("Error : "+t.getMessage());
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_socket);
 
-        start=(Button)findViewById(R.id.wsstart);
+        connect=(Button)findViewById(R.id.wsconnect);
+        send = (Button)findViewById(R.id.wssend);
+        disconnect = (Button)findViewById(R.id.wsdisconnect);
         messages=(TextView)findViewById(R.id.wsmessages);
+        getIP = (EditText)findViewById(R.id.getIP);
+        List<BasicNameValuePair> extraHeaders = null;
 
-        client=new OkHttpClient();
+        client = new WebSocketClient(URI.create("ws://"+getIP.getText().toString()), new WebSocketClient.Listener() {
+            @Override
+            public void onConnect() {
+                Log.d(TAG, "Connected!");
+            }
 
-        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onMessage(String message) {
+                Log.d(TAG, String.format("Got string message! %s", message));
+            }
+
+            @Override
+            public void onMessage(byte[] data) throws UnsupportedEncodingException {
+                Log.d(TAG, String.format("Got binary message! %s", new String(data,"UTF-8")));
+            }
+
+            @Override
+            public void onDisconnect(int code, String reason) {
+                Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
+            }
+
+            @Override
+            public void onError(Exception error) {
+                Log.e(TAG, "Error -"+error.toString() );
+            }
+        }, extraHeaders);
+
+
+        connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                start();
+                client.connect();
+                send.setVisibility(View.VISIBLE);
+                disconnect.setVisibility(View.VISIBLE);
+                connect.setVisibility(View.INVISIBLE);
             }
         });
-    }
-    private void start(){
-        Request request =new Request.Builder().url("ws://").build();
-        EchoWebSocketListener listener = new EchoWebSocketListener();
-        WebSocket socket = client.newWebSocket(request,listener);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                client.send("hello!");
+            }
+        });
+        disconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                client.disconnect();
+                disconnect.setVisibility(View.INVISIBLE);
+                send.setVisibility(View.INVISIBLE);
+                connect.setVisibility(View.VISIBLE);
+            }
+        });
 
-        client.dispatcher().executorService().shutdown();
     }
 
-    private void output(final String text){
-        messages.append(text+"\n");
-    }
 }

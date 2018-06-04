@@ -16,6 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -29,4 +33,5 @@ dependencies {
     api 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'org.apache.httpcomponents:httpclient:4.5.5'
 }
