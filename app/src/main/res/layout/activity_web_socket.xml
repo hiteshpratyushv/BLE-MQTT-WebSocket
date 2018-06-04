@@ -24,14 +24,6 @@
         android:layout_marginTop="131dp"
         android:text="Connect" />
 
-    <TextView
-        android:id="@+id/wsmessages"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="280dp" />
-
     <Button
         android:id="@+id/wssend"
         android:layout_width="wrap_content"
@@ -51,5 +43,22 @@
         android:layout_marginEnd="32dp"
         android:text="Disconnect"
         android:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/messageList"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="119dp" />
+
+    <EditText
+        android:id="@+id/getMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/getIP"
+        android:hint="Enter Message"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
