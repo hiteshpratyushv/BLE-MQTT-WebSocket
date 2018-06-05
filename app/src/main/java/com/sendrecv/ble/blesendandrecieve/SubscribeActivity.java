@@ -67,7 +67,7 @@ public class SubscribeActivity extends AppCompatActivity {
                 try {
                     client = new MqttAndroidClient(getApplicationContext(), "ssl://"+ipinputsubscribe.getText().toString()+
                             ":1883", clientId);
-                    InputStream input = getResources().openRawResource(R.raw.justca);
+                    InputStream input = getResources().openRawResource(R.raw.certswithip);
                     options = new MqttConnectOptions();
                     options.setSocketFactory(PublishActivity.getSSLSocketFactory(input,"password"));
                     IMqttToken token = client.connect(options);
