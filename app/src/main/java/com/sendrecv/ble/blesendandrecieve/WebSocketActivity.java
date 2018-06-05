@@ -9,15 +9,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.codebutler.android_websockets.WebSocketClient;
+import android.widget.Toast;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class WebSocketActivity extends AppCompatActivity {
@@ -30,7 +33,6 @@ public class WebSocketActivity extends AppCompatActivity {
     ArrayList<String> messages;
     ArrayAdapter adapter;
     List<BasicNameValuePair> extraHeaders = null;
-    boolean flag=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,38 +53,7 @@ public class WebSocketActivity extends AppCompatActivity {
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new WebSocketClient(URI.create("ws://"+getIP.getText().toString()), new WebSocketClient.Listener() {
-
-                    @Override
-                    public void onConnect() {
-                        Log.d(TAG, "Connected!");
-                        connect();
-                    }
-
-                    @Override
-                    public void onMessage(String message) {
-                        send(message);
-                        Log.d(TAG, String.format("Got string message! %s", message));
-                    }
-
-                    @Override
-                    public void onMessage(byte[] data) throws UnsupportedEncodingException {
-                        send(new String(data,"UTF-8"));
-                        Log.d(TAG, String.format("Got binary message! %s", new String(data,"UTF-8")));
-                    }
-
-                    @Override
-                    public void onDisconnect(int code, String reason) {
-                        Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
-                        disconnect();
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-                        Log.e(TAG, "Error -"+error.toString() );
-                        disconnect();
-                    }
-                }, extraHeaders);
+                client = new WorkClient(URI.create("ws://"+getIP.getText().toString()));
                 client.connect();
             }
         });
@@ -99,13 +70,14 @@ public class WebSocketActivity extends AppCompatActivity {
         disconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client.disconnect();
+                client.close();
+                uiDisconnect();
             }
         });
 
     }
 
-    private void connect()
+    private void uiConnect()
     {
         runOnUiThread(new Runnable() {
             @Override
@@ -120,9 +92,8 @@ public class WebSocketActivity extends AppCompatActivity {
         });
     }
 
-    private void disconnect()
+    private void uiDisconnect()
     {
-        client=null;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +106,7 @@ public class WebSocketActivity extends AppCompatActivity {
         });
     }
 
-    private void send(final String message)
+    private void uiSend(final String message)
     {
         runOnUiThread(new Runnable() {
             @Override
@@ -145,4 +116,44 @@ public class WebSocketActivity extends AppCompatActivity {
         });
     }
 
+    private class WorkClient extends WebSocketClient {
+
+        public final String TAG = "WebSocketClient";
+
+        public WorkClient(URI serverUri, Draft draft) {
+            super(serverUri, draft);
+        }
+
+        public WorkClient(URI serverURI) {
+            super(serverURI);
+        }
+
+        public WorkClient(URI serverUri, Map<String, String> httpHeaders) {
+            super(serverUri, httpHeaders);
+        }
+
+        @Override
+        public void onOpen(ServerHandshake handshakedata) {
+            uiConnect();
+            Log.d(TAG,"Connected");
+        }
+
+        @Override
+        public void onMessage(String message) {
+            System.out.println("received: " + message);
+            uiSend(message);
+        }
+
+        @Override
+        public void onClose(int code, String reason, boolean remote) {
+            uiDisconnect();
+            Log.d(TAG, "Connection closed by " + (remote ? "remote peer" : "us") + " Code: " + code + " Reason: " + reason);
+        }
+
+        @Override
+        public void onError(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }
+
